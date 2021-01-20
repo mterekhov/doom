@@ -71,4 +71,5 @@
     [menubar addItem: appMenuItem];
     NSApp.mainMenu = menubar;
 }
+
 @end

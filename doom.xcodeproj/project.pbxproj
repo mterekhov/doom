@@ -3,22 +3,42 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E3499A7125B899D00048F4DA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; };
+		E3499A7225B899D00048F4DA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E3499A7625B899F80048F4DA /* AVulkan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3499A7525B899F80048F4DA /* AVulkan.cpp */; };
 		E377DB3F25B88FFF003958A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB3E25B88FFF003958A2 /* AppDelegate.m */; };
-		E377DB4525B88FFF003958A2 /* AGameVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4425B88FFF003958A2 /* AGameVC.m */; };
+		E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4425B88FFF003958A2 /* AGameVC.mm */; };
 		E377DB4A25B89000003958A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E377DB4925B89000003958A2 /* Assets.xcassets */; };
 		E377DB5025B89000003958A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4F25B89000003958A2 /* main.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E3499A7325B899D00048F4DA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E3499A7225B899D00048F4DA /* MoltenVK.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		E3499A7025B899D00048F4DA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = "vulkansdk-macos-1.2.162.0/MoltenVK/MoltenVK.xcframework"; sourceTree = "<group>"; };
+		E3499A7425B899F80048F4DA /* AVulkan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVulkan.h; path = engine/AVulkan.h; sourceTree = "<group>"; };
+		E3499A7525B899F80048F4DA /* AVulkan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AVulkan.cpp; path = engine/AVulkan.cpp; sourceTree = "<group>"; };
 		E377DB3A25B88FFF003958A2 /* doom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = doom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E377DB3D25B88FFF003958A2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E377DB3E25B88FFF003958A2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E377DB4325B88FFF003958A2 /* AGameVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AGameVC.h; sourceTree = "<group>"; };
-		E377DB4425B88FFF003958A2 /* AGameVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AGameVC.m; sourceTree = "<group>"; };
+		E377DB4425B88FFF003958A2 /* AGameVC.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AGameVC.mm; sourceTree = "<group>"; };
 		E377DB4925B89000003958A2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E377DB4E25B89000003958A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E377DB4F25B89000003958A2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -30,17 +50,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3499A7125B899D00048F4DA /* MoltenVK.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E3499A6A25B899A60048F4DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E3499A7025B899D00048F4DA /* MoltenVK.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E377DB3125B88FFF003958A2 = {
 			isa = PBXGroup;
 			children = (
 				E377DB3C25B88FFF003958A2 /* doom */,
 				E377DB3B25B88FFF003958A2 /* Products */,
+				E3499A6A25B899A60048F4DA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -55,8 +85,10 @@
 		E377DB3C25B88FFF003958A2 /* doom */ = {
 			isa = PBXGroup;
 			children = (
+				E3499A7525B899F80048F4DA /* AVulkan.cpp */,
+				E3499A7425B899F80048F4DA /* AVulkan.h */,
 				E377DB4325B88FFF003958A2 /* AGameVC.h */,
-				E377DB4425B88FFF003958A2 /* AGameVC.m */,
+				E377DB4425B88FFF003958A2 /* AGameVC.mm */,
 				E377DB3D25B88FFF003958A2 /* AppDelegate.h */,
 				E377DB3E25B88FFF003958A2 /* AppDelegate.m */,
 				E377DB4F25B89000003958A2 /* main.m */,
@@ -77,6 +109,7 @@
 				E377DB3625B88FFF003958A2 /* Sources */,
 				E377DB3725B88FFF003958A2 /* Frameworks */,
 				E377DB3825B88FFF003958A2 /* Resources */,
+				E3499A7325B899D00048F4DA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -135,7 +168,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E377DB5025B89000003958A2 /* main.m in Sources */,
-				E377DB4525B88FFF003958A2 /* AGameVC.m in Sources */,
+				E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */,
+				E3499A7625B899F80048F4DA /* AVulkan.cpp in Sources */,
 				E377DB3F25B88FFF003958A2 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +305,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.icgsmartcosmetics.doom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/**";
 			};
 			name = Debug;
 		};
@@ -291,6 +326,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.icgsmartcosmetics.doom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYSTEM_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/**";
 			};
 			name = Release;
 		};
