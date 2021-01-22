@@ -8,14 +8,14 @@
 #import <MetalKit/MetalKit.h>
 
 #import "AGameVC.h"
-#import "AVulkan.h"
+#import "AVulkanAPI.h"
 
 static NSTimeInterval timeMark = 0;
 static NSInteger framesCount = 0;
 
 @interface AGameVC()
 
-@property (nonatomic, assign) AVulkan *vulkanEngine;
+@property (nonatomic, assign) DoomEngine::AVulkanAPI *vulkanEngine;
 
 @end
 
@@ -25,11 +25,19 @@ static NSInteger framesCount = 0;
     self = [super init];
     if (self) {
         self.view = newView;
-        self.vulkanEngine = new AVulkan();
-        self.vulkanEngine->initVulkan();
+        self.vulkanEngine = new DoomEngine::AVulkanAPI();
+        if (!self.vulkanEngine->initVulkan()) {
+            NSLog(@"ACHTUNG: no chance to create VULKAN instance");
+        }
     }
     
     return self;
+}
+
+- (void)dealloc
+{
+    self.vulkanEngine->destroyVulkan();
+    delete self.vulkanEngine;
 }
 
 #pragma mark - MTKViewDelegate -

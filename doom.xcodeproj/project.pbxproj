@@ -9,11 +9,12 @@
 /* Begin PBXBuildFile section */
 		E3499A7125B899D00048F4DA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; };
 		E3499A7225B899D00048F4DA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E3499A7625B899F80048F4DA /* AVulkan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3499A7525B899F80048F4DA /* AVulkan.cpp */; };
+		E3499A7625B899F80048F4DA /* AVulkanAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */; };
 		E377DB3F25B88FFF003958A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB3E25B88FFF003958A2 /* AppDelegate.m */; };
 		E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4425B88FFF003958A2 /* AGameVC.mm */; };
 		E377DB4A25B89000003958A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E377DB4925B89000003958A2 /* Assets.xcassets */; };
 		E377DB5025B89000003958A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4F25B89000003958A2 /* main.m */; };
+		E3EDD6E925B96CDA00925E77 /* AInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EDD6E725B96CDA00925E77 /* AInstance.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,8 +33,8 @@
 
 /* Begin PBXFileReference section */
 		E3499A7025B899D00048F4DA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = "vulkansdk-macos-1.2.162.0/MoltenVK/MoltenVK.xcframework"; sourceTree = "<group>"; };
-		E3499A7425B899F80048F4DA /* AVulkan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVulkan.h; path = engine/AVulkan.h; sourceTree = "<group>"; };
-		E3499A7525B899F80048F4DA /* AVulkan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AVulkan.cpp; path = engine/AVulkan.cpp; sourceTree = "<group>"; };
+		E3499A7425B899F80048F4DA /* AVulkanAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVulkanAPI.h; sourceTree = "<group>"; };
+		E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVulkanAPI.cpp; sourceTree = "<group>"; };
 		E377DB3A25B88FFF003958A2 /* doom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = doom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E377DB3D25B88FFF003958A2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E377DB3E25B88FFF003958A2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -43,6 +44,8 @@
 		E377DB4E25B89000003958A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E377DB4F25B89000003958A2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E377DB5125B89000003958A2 /* doom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = doom.entitlements; sourceTree = "<group>"; };
+		E3EDD6E725B96CDA00925E77 /* AInstance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AInstance.cpp; sourceTree = "<group>"; };
+		E3EDD6E825B96CDA00925E77 /* AInstance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AInstance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +88,7 @@
 		E377DB3C25B88FFF003958A2 /* doom */ = {
 			isa = PBXGroup;
 			children = (
-				E3499A7525B899F80048F4DA /* AVulkan.cpp */,
-				E3499A7425B899F80048F4DA /* AVulkan.h */,
+				E3EDD6EA25B96CE300925E77 /* engine */,
 				E377DB4325B88FFF003958A2 /* AGameVC.h */,
 				E377DB4425B88FFF003958A2 /* AGameVC.mm */,
 				E377DB3D25B88FFF003958A2 /* AppDelegate.h */,
@@ -97,6 +99,17 @@
 				E377DB5125B89000003958A2 /* doom.entitlements */,
 			);
 			path = doom;
+			sourceTree = "<group>";
+		};
+		E3EDD6EA25B96CE300925E77 /* engine */ = {
+			isa = PBXGroup;
+			children = (
+				E3499A7425B899F80048F4DA /* AVulkanAPI.h */,
+				E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */,
+				E3EDD6E825B96CDA00925E77 /* AInstance.h */,
+				E3EDD6E725B96CDA00925E77 /* AInstance.cpp */,
+			);
+			name = engine;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -169,7 +182,8 @@
 			files = (
 				E377DB5025B89000003958A2 /* main.m in Sources */,
 				E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */,
-				E3499A7625B899F80048F4DA /* AVulkan.cpp in Sources */,
+				E3EDD6E925B96CDA00925E77 /* AInstance.cpp in Sources */,
+				E3499A7625B899F80048F4DA /* AVulkanAPI.cpp in Sources */,
 				E377DB3F25B88FFF003958A2 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
