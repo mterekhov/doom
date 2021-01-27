@@ -13,7 +13,7 @@ static const TCharPointersArray khronosValidationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
-AInstance::AInstance() {
+void AInstance::createInstance() {
 #ifdef DEBUG
     useValidationLayers = true;
 #endif
@@ -45,7 +45,7 @@ AInstance::AInstance() {
     }
 }
 
-AInstance::~AInstance() {
+void AInstance::destroyInstance() {
     if (useValidationLayers) {
         destroyDebugUtilsMessenger(vulkanInstance, debugMessenger, nullptr);
     }

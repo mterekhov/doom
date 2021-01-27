@@ -15,9 +15,6 @@ namespace DoomEngine {
 
 class AVulkanAPI {
 public:
-    AVulkanAPI();
-    ~AVulkanAPI();
-
     bool initVulkan();
     void destroyVulkan();
 

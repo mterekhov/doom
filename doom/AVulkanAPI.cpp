@@ -9,12 +9,13 @@
 
 namespace DoomEngine {
 
-AVulkanAPI::AVulkanAPI() {
-    
+bool AVulkanAPI::initVulkan() {
+    vulkanInstance.createInstance();
+    return true;
 }
 
-AVulkanAPI::~AVulkanAPI() {
-    
+void AVulkanAPI::destroyVulkan() {
+    vulkanInstance.destroyInstance();
 }
 
 void AVulkanAPI::setViewSize(int width, int height) {
@@ -25,15 +26,7 @@ void AVulkanAPI::setView(void *pView) {
     
 }
 
-bool AVulkanAPI::initVulkan() {    
-    return true;
-}
-
 void AVulkanAPI::mainLoop() {
-    
-}
-
-void AVulkanAPI:: destroyVulkan() {
     
 }
 

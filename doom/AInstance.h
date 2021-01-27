@@ -20,28 +20,24 @@ typedef std::vector<const char *> TCharPointersArray;
 
 class AInstance {
 public:
-    AInstance();
-    ~AInstance();
-    
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                                                        void* pUserData);
+    void createInstance();
+    void destroyInstance();
+
 private:
-    bool useValidationLayers = false;
-    VkDebugUtilsMessengerEXT debugMessenger;
     VkInstance vulkanInstance;
-    VkPhysicalDevice device;
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
+    VkDebugUtilsMessengerEXT debugMessenger;
+    bool useValidationLayers = false;
+    VkPhysicalDevice device;
     
+    void setupDevice();
+
     VkDebugUtilsMessengerCreateInfoEXT appendValidationLayers(VkInstanceCreateInfo& createInfo);
     TInstanceExtensionsArray collectInstanceExtensions();
     TCharPointersArray collectInstanceExtensionsNames(TInstanceExtensionsArray extensionsList);
     bool checkValidationLayerSupport(const TCharPointersArray& layersNamesList);
     VkApplicationInfo applicationInfo();
-
-    void setupDevice();
 
     void setupDebugMessenger();
     VkDebugUtilsMessengerCreateInfoEXT debugMessengerCreateInfo();
@@ -52,6 +48,10 @@ private:
     void destroyDebugUtilsMessenger(VkInstance instance,
                                     VkDebugUtilsMessengerEXT debugMessenger,
                                     const VkAllocationCallbacks* pAllocator);
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                                                        void* pUserData);
 };
 
 }
