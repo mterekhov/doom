@@ -39,7 +39,8 @@ private:
     TInstanceExtensionsArray collectInstanceExtensions();
     TCharPointersArray collectInstanceExtensionsNames(TInstanceExtensionsArray extensionsList);
     bool checkValidationLayerSupport(const TCharPointersArray& layersNamesList);
-    
+    VkApplicationInfo applicationInfo();
+
     void setupDevice();
 
     void setupDebugMessenger();

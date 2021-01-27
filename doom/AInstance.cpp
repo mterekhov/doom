@@ -20,22 +20,14 @@ AInstance::AInstance() {
     extensionsList = collectInstanceExtensions();
     extensionsNamesList = collectInstanceExtensionsNames(extensionsList);
     
-    uint32_t pApiVersion = 0;
-    vkEnumerateInstanceVersion(&pApiVersion);
-    
-    VkApplicationInfo appInfo = {};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "Doom";
-    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = pApiVersion;
-    appInfo.pEngineName = "DoomEngine";
-    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    
     VkInstanceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensionsNamesList.size());
     createInfo.ppEnabledExtensionNames = extensionsNamesList.data();
+    
+    VkApplicationInfo appInfo = applicationInfo();
+    createInfo.pApplicationInfo = &appInfo;
+
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = appendValidationLayers(createInfo);
     if (useValidationLayers) {
         createInfo.pNext = &debugCreateInfo;
@@ -63,6 +55,22 @@ AInstance::~AInstance() {
     for (const auto& name : extensionsNamesList) {
         delete [] name;
     }
+}
+
+VkApplicationInfo AInstance::applicationInfo() {
+    VkApplicationInfo appInfo = {};
+    
+    uint32_t pApiVersion = 0;
+    vkEnumerateInstanceVersion(&pApiVersion);
+    appInfo.apiVersion = pApiVersion;
+
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = "Doom";
+    appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    appInfo.pEngineName = "DoomEngine";
+    appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    
+    return appInfo;
 }
 
 #pragma mark - Instance Extensions -
