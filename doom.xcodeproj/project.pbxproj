@@ -3,36 +3,42 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E3499A7125B899D00048F4DA /* MoltenVK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; };
-		E3499A7225B899D00048F4DA /* MoltenVK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E3499A7025B899D00048F4DA /* MoltenVK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E3499A7625B899F80048F4DA /* AVulkanAPI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */; };
 		E377DB3F25B88FFF003958A2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB3E25B88FFF003958A2 /* AppDelegate.m */; };
 		E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4425B88FFF003958A2 /* AGameVC.mm */; };
 		E377DB4A25B89000003958A2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E377DB4925B89000003958A2 /* Assets.xcassets */; };
 		E377DB5025B89000003958A2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E377DB4F25B89000003958A2 /* main.m */; };
+		E38E5F8025C18E3B00A115C0 /* libMoltenVK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E5F7D25C18E3B00A115C0 /* libMoltenVK.dylib */; };
+		E38E5F8125C18E3B00A115C0 /* libMoltenVK.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E38E5F7D25C18E3B00A115C0 /* libMoltenVK.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E38E5F8225C18E3B00A115C0 /* libvulkan.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E5F7E25C18E3B00A115C0 /* libvulkan.1.dylib */; };
+		E38E5F8325C18E3B00A115C0 /* libvulkan.1.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E38E5F7E25C18E3B00A115C0 /* libvulkan.1.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E38E5F8425C18E3B00A115C0 /* libvulkan.1.2.162.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E5F7F25C18E3B00A115C0 /* libvulkan.1.2.162.dylib */; };
+		E38E5F8525C18E3B00A115C0 /* libvulkan.1.2.162.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E38E5F7F25C18E3B00A115C0 /* libvulkan.1.2.162.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E3EC319B25C18F020082A9E7 /* vulkan in Resources */ = {isa = PBXBuildFile; fileRef = E3EC319A25C18F020082A9E7 /* vulkan */; };
 		E3EDD6E925B96CDA00925E77 /* AInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EDD6E725B96CDA00925E77 /* AInstance.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		E3499A7325B899D00048F4DA /* Embed Frameworks */ = {
+		E3257C6825C17DE5007F6E4A /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E3499A7225B899D00048F4DA /* MoltenVK.xcframework in Embed Frameworks */,
+				E38E5F8325C18E3B00A115C0 /* libvulkan.1.dylib in Embed Libraries */,
+				E38E5F8125C18E3B00A115C0 /* libMoltenVK.dylib in Embed Libraries */,
+				E38E5F8525C18E3B00A115C0 /* libvulkan.1.2.162.dylib in Embed Libraries */,
 			);
-			name = "Embed Frameworks";
+			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E3499A7025B899D00048F4DA /* MoltenVK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoltenVK.xcframework; path = "vulkansdk-macos-1.2.162.0/MoltenVK/MoltenVK.xcframework"; sourceTree = "<group>"; };
 		E3499A7425B899F80048F4DA /* AVulkanAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVulkanAPI.h; sourceTree = "<group>"; };
 		E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVulkanAPI.cpp; sourceTree = "<group>"; };
 		E377DB3A25B88FFF003958A2 /* doom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = doom.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +50,10 @@
 		E377DB4E25B89000003958A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E377DB4F25B89000003958A2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E377DB5125B89000003958A2 /* doom.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = doom.entitlements; sourceTree = "<group>"; };
+		E38E5F7D25C18E3B00A115C0 /* libMoltenVK.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMoltenVK.dylib; path = "vulkansdk-macos-1.2.162.0/macOS/lib/libMoltenVK.dylib"; sourceTree = "<group>"; };
+		E38E5F7E25C18E3B00A115C0 /* libvulkan.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvulkan.1.dylib; path = "vulkansdk-macos-1.2.162.0/macOS/lib/libvulkan.1.dylib"; sourceTree = "<group>"; };
+		E38E5F7F25C18E3B00A115C0 /* libvulkan.1.2.162.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvulkan.1.2.162.dylib; path = "vulkansdk-macos-1.2.162.0/macOS/lib/libvulkan.1.2.162.dylib"; sourceTree = "<group>"; };
+		E3EC319A25C18F020082A9E7 /* vulkan */ = {isa = PBXFileReference; lastKnownFileType = folder; path = vulkan; sourceTree = "<group>"; };
 		E3EDD6E725B96CDA00925E77 /* AInstance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AInstance.cpp; sourceTree = "<group>"; };
 		E3EDD6E825B96CDA00925E77 /* AInstance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AInstance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -53,7 +63,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3499A7125B899D00048F4DA /* MoltenVK.xcframework in Frameworks */,
+				E38E5F8225C18E3B00A115C0 /* libvulkan.1.dylib in Frameworks */,
+				E38E5F8025C18E3B00A115C0 /* libMoltenVK.dylib in Frameworks */,
+				E38E5F8425C18E3B00A115C0 /* libvulkan.1.2.162.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +75,9 @@
 		E3499A6A25B899A60048F4DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E3499A7025B899D00048F4DA /* MoltenVK.xcframework */,
+				E38E5F7D25C18E3B00A115C0 /* libMoltenVK.dylib */,
+				E38E5F7F25C18E3B00A115C0 /* libvulkan.1.2.162.dylib */,
+				E38E5F7E25C18E3B00A115C0 /* libvulkan.1.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -88,6 +102,7 @@
 		E377DB3C25B88FFF003958A2 /* doom */ = {
 			isa = PBXGroup;
 			children = (
+				E3EC319A25C18F020082A9E7 /* vulkan */,
 				E3EDD6EA25B96CE300925E77 /* engine */,
 				E377DB4325B88FFF003958A2 /* AGameVC.h */,
 				E377DB4425B88FFF003958A2 /* AGameVC.mm */,
@@ -122,7 +137,7 @@
 				E377DB3625B88FFF003958A2 /* Sources */,
 				E377DB3725B88FFF003958A2 /* Frameworks */,
 				E377DB3825B88FFF003958A2 /* Resources */,
-				E3499A7325B899D00048F4DA /* Embed Frameworks */,
+				E3257C6825C17DE5007F6E4A /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -170,6 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E377DB4A25B89000003958A2 /* Assets.xcassets in Resources */,
+				E3EC319B25C18F020082A9E7 /* vulkan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,10 +332,15 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/macOS/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/**";
 				INFOPLIST_FILE = doom/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/macOS/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.icgsmartcosmetics.doom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -341,10 +362,15 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/macOS/Frameworks",
 				);
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/**";
 				INFOPLIST_FILE = doom/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/macOS/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.icgsmartcosmetics.doom;
 				PRODUCT_NAME = "$(TARGET_NAME)";

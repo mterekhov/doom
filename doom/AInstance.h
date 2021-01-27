@@ -23,6 +23,10 @@ public:
     AInstance();
     ~AInstance();
     
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                                                        void* pUserData);
 private:
     bool useValidationLayers = false;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -31,7 +35,7 @@ private:
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
     
-    void appendValidationLayers(VkInstanceCreateInfo& createInfo);
+    VkDebugUtilsMessengerCreateInfoEXT appendValidationLayers(VkInstanceCreateInfo& createInfo);
     TInstanceExtensionsArray collectInstanceExtensions();
     TCharPointersArray collectInstanceExtensionsNames(TInstanceExtensionsArray extensionsList);
     bool checkValidationLayerSupport(const TCharPointersArray& layersNamesList);
@@ -47,10 +51,6 @@ private:
     void destroyDebugUtilsMessenger(VkInstance instance,
                                     VkDebugUtilsMessengerEXT debugMessenger,
                                     const VkAllocationCallbacks* pAllocator);
-    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                                                        void* pUserData);
 };
 
 }

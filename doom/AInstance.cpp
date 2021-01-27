@@ -9,7 +9,7 @@
 
 namespace DoomEngine {
 
-const TCharPointersArray khronosValidationLayers = {
+static const TCharPointersArray khronosValidationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
@@ -36,19 +36,21 @@ AInstance::AInstance() {
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensionsNamesList.size());
     createInfo.ppEnabledExtensionNames = extensionsNamesList.data();
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = appendValidationLayers(createInfo);
     if (useValidationLayers) {
-        appendValidationLayers(createInfo);
+        createInfo.pNext = &debugCreateInfo;
     }
 
-    VkResult error = vkCreateInstance(&createInfo, nullptr, &vulkanInstance);
+    VkResult error = VK_SUCCESS;
+    error = vkCreateInstance(&createInfo, nullptr, &vulkanInstance);
     if (error != VK_SUCCESS) {
         printf("DoomEngine: error creating VULKAN instance\n");
         return;
     }
 
-#ifdef DEBUG
-    setupDebugMessenger();
-#endif
+    if (useValidationLayers) {
+        setupDebugMessenger();
+    }
 }
 
 AInstance::~AInstance() {
@@ -83,6 +85,7 @@ TCharPointersArray AInstance::collectInstanceExtensionsNames(TInstanceExtensions
         char *newString = new char[256];
         memcpy(newString, extension.extensionName, VK_MAX_EXTENSION_NAME_SIZE);
         namesList.insert(namesList.end(), newString);
+        printf("%s\n", newString);
     }
     
     return namesList;
@@ -95,27 +98,6 @@ void AInstance::setupDebugMessenger() {
     
     if (createDebugUtilsMessenger(vulkanInstance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
         printf("DoomEngine: failed to set up debug messenger\n");
-    }
-}
-
-VkResult AInstance::createDebugUtilsMessenger(VkInstance instance,
-                                              const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-                                              const VkAllocationCallbacks* pAllocator,
-                                              VkDebugUtilsMessengerEXT* pDebugMessenger) {
-    auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
-    if (func != nullptr) {
-        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
-    }
-    
-    return VK_ERROR_EXTENSION_NOT_PRESENT;
-}
-
-void AInstance::destroyDebugUtilsMessenger(VkInstance instance,
-                                           VkDebugUtilsMessengerEXT debugMessenger,
-                                           const VkAllocationCallbacks* pAllocator) {
-    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
-    if (func != nullptr) {
-        func(instance, debugMessenger, pAllocator);
     }
 }
 
@@ -148,15 +130,15 @@ VkDebugUtilsMessengerCreateInfoEXT AInstance::debugMessengerCreateInfo() {
     return createInfo;
 }
 
-void AInstance::appendValidationLayers(VkInstanceCreateInfo& createInfo) {
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = debugMessengerCreateInfo();
+VkDebugUtilsMessengerCreateInfoEXT AInstance::appendValidationLayers(VkInstanceCreateInfo& createInfo) {
     if (!checkValidationLayerSupport(khronosValidationLayers)) {
-        return;
+        return VkDebugUtilsMessengerCreateInfoEXT();
     }
     
     createInfo.enabledLayerCount = static_cast<uint32_t>(khronosValidationLayers.size());
     createInfo.ppEnabledLayerNames = khronosValidationLayers.data();
-    createInfo.pNext = static_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+    
+    return debugMessengerCreateInfo();
 }
 
 VKAPI_ATTR VkBool32 VKAPI_CALL AInstance::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -167,6 +149,28 @@ VKAPI_ATTR VkBool32 VKAPI_CALL AInstance::debugCallback(VkDebugUtilsMessageSever
     
     return VK_FALSE;
 }
+
+VkResult AInstance::createDebugUtilsMessenger(VkInstance instance,
+                                              const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+                                              const VkAllocationCallbacks* pAllocator,
+                                              VkDebugUtilsMessengerEXT* pDebugMessenger) {
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+    }
+    
+    return VK_ERROR_EXTENSION_NOT_PRESENT;
+}
+
+void AInstance::destroyDebugUtilsMessenger(VkInstance instance,
+                                           VkDebugUtilsMessengerEXT debugMessenger,
+                                           const VkAllocationCallbacks* pAllocator) {
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        func(instance, debugMessenger, pAllocator);
+    }
+}
+
 
 #pragma mark - Device -
 
