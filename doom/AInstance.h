@@ -24,12 +24,14 @@ public:
     ~AInstance();
     
 private:
+    bool useValidationLayers = false;
     VkDebugUtilsMessengerEXT debugMessenger;
     VkInstance vulkanInstance;
     VkPhysicalDevice device;
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
     
+    void appendValidationLayers(VkInstanceCreateInfo& createInfo);
     TInstanceExtensionsArray collectInstanceExtensions();
     TCharPointersArray collectInstanceExtensionsNames(TInstanceExtensionsArray extensionsList);
     bool checkValidationLayerSupport(const TCharPointersArray& layersNamesList);

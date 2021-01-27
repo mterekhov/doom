@@ -14,6 +14,9 @@ const TCharPointersArray khronosValidationLayers = {
 };
 
 AInstance::AInstance() {
+#ifdef DEBUG
+    useValidationLayers = true;
+#endif
     extensionsList = collectInstanceExtensions();
     extensionsNamesList = collectInstanceExtensionsNames(extensionsList);
     
@@ -33,15 +36,10 @@ AInstance::AInstance() {
     createInfo.pApplicationInfo = &appInfo;
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensionsNamesList.size());
     createInfo.ppEnabledExtensionNames = extensionsNamesList.data();
-#ifdef DEBUG
-    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = debugMessengerCreateInfo();
-    if (checkValidationLayerSupport(khronosValidationLayers)) {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(khronosValidationLayers.size());
-        createInfo.ppEnabledLayerNames = khronosValidationLayers.data();
-        createInfo.pNext = static_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+    if (useValidationLayers) {
+        appendValidationLayers(createInfo);
     }
-#endif
-    
+
     VkResult error = vkCreateInstance(&createInfo, nullptr, &vulkanInstance);
     if (error != VK_SUCCESS) {
         printf("DoomEngine: error creating VULKAN instance\n");
@@ -51,17 +49,21 @@ AInstance::AInstance() {
 #ifdef DEBUG
     setupDebugMessenger();
 #endif
-    printf("DoomEngine: vulkan instance created\n");
 }
 
 AInstance::~AInstance() {
-//    destroyDebugUtilsMessenger(vulkanInstance, debugMessenger, nullptr);
+    if (useValidationLayers) {
+        destroyDebugUtilsMessenger(vulkanInstance, debugMessenger, nullptr);
+    }
 
     vkDestroyInstance(vulkanInstance, nullptr);
+    
     for (const auto& name : extensionsNamesList) {
         delete [] name;
     }
 }
+
+#pragma mark - Instance Extensions -
 
 TInstanceExtensionsArray AInstance::collectInstanceExtensions() {
     //  define count of extensions
@@ -77,7 +79,6 @@ TInstanceExtensionsArray AInstance::collectInstanceExtensions() {
 
 TCharPointersArray AInstance::collectInstanceExtensionsNames(TInstanceExtensionsArray extensionsList) {
     TCharPointersArray namesList = TCharPointersArray();
-    printf("DoomEngine: available instance extensions:\n");
     for (const auto& extension : extensionsList) {
         char *newString = new char[256];
         memcpy(newString, extension.extensionName, VK_MAX_EXTENSION_NAME_SIZE);
@@ -87,48 +88,14 @@ TCharPointersArray AInstance::collectInstanceExtensionsNames(TInstanceExtensions
     return namesList;
 }
 
-bool AInstance::checkValidationLayerSupport(const TCharPointersArray& layersNamesList) {
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-    
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-    
-    for (const char *layerName : layersNamesList) {
-        for (const auto& layerProperties : availableLayers) {
-            if (strcmp(layerName, layerProperties.layerName) == 0) {
-                return true;
-            }
-        }
-    }
-    
-    return false;
-}
+#pragma mark - Validation Layers -
 
-void AInstance::setupDevice() {
-    uint32_t devicesCount = 0;
-    vkEnumeratePhysicalDevices(vulkanInstance, &devicesCount, nullptr);
+void AInstance::setupDebugMessenger() {
+    VkDebugUtilsMessengerCreateInfoEXT createInfo = debugMessengerCreateInfo();
     
-    std::vector<VkPhysicalDevice> devicesList(devicesCount);
-    vkEnumeratePhysicalDevices(vulkanInstance, &devicesCount, devicesList.data());
-    printf("DoomEngine: available devices:\n");
-    for (const auto& device : devicesList) {
-        VkPhysicalDeviceProperties deviceProperties;
-        VkPhysicalDeviceFeatures deviceFeatures;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
-        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-        printf("\t%s\n", deviceProperties.deviceName);
+    if (createDebugUtilsMessenger(vulkanInstance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
+        printf("DoomEngine: failed to set up debug messenger\n");
     }
-    
-}
-
-VKAPI_ATTR VkBool32 VKAPI_CALL AInstance::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
-                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-                                                        void* pUserData) {
-    printf("DoomEngine: %s\n", pCallbackData->pMessage);
-    
-    return VK_FALSE;
 }
 
 VkResult AInstance::createDebugUtilsMessenger(VkInstance instance,
@@ -152,6 +119,24 @@ void AInstance::destroyDebugUtilsMessenger(VkInstance instance,
     }
 }
 
+bool AInstance::checkValidationLayerSupport(const TCharPointersArray& layersNamesList) {
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+    
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+    
+    for (const char *layerName : layersNamesList) {
+        for (const auto& layerProperties : availableLayers) {
+            if (strcmp(layerName, layerProperties.layerName) == 0) {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
 VkDebugUtilsMessengerCreateInfoEXT AInstance::debugMessengerCreateInfo() {
     VkDebugUtilsMessengerCreateInfoEXT createInfo = {};
     
@@ -163,12 +148,43 @@ VkDebugUtilsMessengerCreateInfoEXT AInstance::debugMessengerCreateInfo() {
     return createInfo;
 }
 
-void AInstance::setupDebugMessenger() {
-    VkDebugUtilsMessengerCreateInfoEXT createInfo = debugMessengerCreateInfo();
-    
-    if (createDebugUtilsMessenger(vulkanInstance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) {
-        printf("DoomEngine: failed to set up debug messenger\n");
+void AInstance::appendValidationLayers(VkInstanceCreateInfo& createInfo) {
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = debugMessengerCreateInfo();
+    if (!checkValidationLayerSupport(khronosValidationLayers)) {
+        return;
     }
+    
+    createInfo.enabledLayerCount = static_cast<uint32_t>(khronosValidationLayers.size());
+    createInfo.ppEnabledLayerNames = khronosValidationLayers.data();
+    createInfo.pNext = static_cast<VkDebugUtilsMessengerCreateInfoEXT *>(&debugCreateInfo);
+}
+
+VKAPI_ATTR VkBool32 VKAPI_CALL AInstance::debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+                                                        VkDebugUtilsMessageTypeFlagsEXT messageType,
+                                                        const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+                                                        void* pUserData) {
+    printf("DoomEngineLayer: %s\n", pCallbackData->pMessage);
+    
+    return VK_FALSE;
+}
+
+#pragma mark - Device -
+
+void AInstance::setupDevice() {
+    uint32_t devicesCount = 0;
+    vkEnumeratePhysicalDevices(vulkanInstance, &devicesCount, nullptr);
+    
+    std::vector<VkPhysicalDevice> devicesList(devicesCount);
+    vkEnumeratePhysicalDevices(vulkanInstance, &devicesCount, devicesList.data());
+    printf("DoomEngine: available devices:\n");
+    for (const auto& device : devicesList) {
+        VkPhysicalDeviceProperties deviceProperties;
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+        printf("\t%s\n", deviceProperties.deviceName);
+    }
+    
 }
 
 }
