@@ -332,6 +332,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/macOS/Frameworks",
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					VK_USE_PLATFORM_METAL_EXT,
+				);
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/vulkansdk-macos-1.2.162.0/**";
 				INFOPLIST_FILE = doom/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

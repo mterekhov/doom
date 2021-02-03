@@ -19,6 +19,11 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+//    NSLog(@"VULKAN_SDK = %@", NSProcessInfo.processInfo.environment[@"VULKAN_SDK"]);
+//    NSLog(@"VK_LAYER_PATH = %@", NSProcessInfo.processInfo.environment[@"VK_LAYER_PATH"]);
+//    NSLog(@"VK_ICD_FILENAMES = %@", NSProcessInfo.processInfo.environment[@"VK_ICD_FILENAMES"]);
+//    NSLog(@"PATH = %@", NSProcessInfo.processInfo.environment[@"PATH"]);
+//    NSLog(@"DYLD_LIBRARY_PATH = %@", NSProcessInfo.processInfo.environment[@"DYLD_LIBRARY_PATH"]);
     self.window = [self createWindow];
     [self createMenu];
 }
@@ -49,7 +54,8 @@
     
     MTKView *metalView = [[MTKView alloc] initWithFrame: NSMakeRect(0, 0, windowSize.width, windowSize.height)];
     metalView.device = MTLCreateSystemDefaultDevice();
-    AGameVC *viewController = [[AGameVC alloc] initWithView: metalView];
+    AGameVC *viewController = [AGameVC new];
+    viewController.view = metalView;
     metalView.delegate = viewController;
     newWindow.contentViewController = viewController;
     

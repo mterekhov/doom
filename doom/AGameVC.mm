@@ -21,17 +21,18 @@ static NSInteger framesCount = 0;
 
 @implementation AGameVC
 
-- (instancetype)initWithView: (NSView *)newView {
-    self = [super init];
-    if (self) {
-        self.view = newView;
-        self.vulkanEngine = new DoomEngine::AVulkanAPI();
-        if (!self.vulkanEngine->initVulkan()) {
-            NSLog(@"ACHTUNG: no chance to create VULKAN instance");
-        }
-    }
+- (void)viewDidAppear {
+    [super viewDidAppear];
     
-    return self;
+    self.vulkanEngine = new DoomEngine::AVulkanAPI();
+    if (!self.vulkanEngine->initVulkan((__bridge void *)self.view.layer)) {
+        NSLog(@"ACHTUNG: no chance to create VULKAN instance");
+    }
+}
+- (void)viewDidDisappear {
+    [super viewDidDisappear];
+    
+    self.vulkanEngine->destroyVulkan();
 }
 
 - (void)dealloc

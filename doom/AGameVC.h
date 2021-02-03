@@ -12,6 +12,4 @@
 // Our macOS view controller.
 @interface AGameVC : NSViewController<MTKViewDelegate>
 
-- (instancetype)initWithView: (NSView *)newView;
-
 @end

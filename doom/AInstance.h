@@ -20,18 +20,27 @@ typedef std::vector<const char *> TCharPointersArray;
 
 class AInstance {
 public:
-    void createInstance();
+    void createInstance(void *metalLayer);
     void destroyInstance();
 
 private:
+    VkQueue graphicsQueue;
+    VkPhysicalDevice physicalDevice;
+    VkDevice logicalDevice;
     VkInstance vulkanInstance;
+    VkSurfaceKHR surface;
+    
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
     VkDebugUtilsMessengerEXT debugMessenger;
     bool useValidationLayers = false;
-    VkPhysicalDevice device;
     
     void setupDevice();
+    bool checkDeviceCapability(const VkPhysicalDevice& device);
+    
+    void setupLogicalDevice();
+
+    void setupSurface(void *metalLayer);
 
     VkDebugUtilsMessengerCreateInfoEXT appendValidationLayers(VkInstanceCreateInfo& createInfo);
     TInstanceExtensionsArray collectInstanceExtensions();

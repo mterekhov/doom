@@ -13,7 +13,7 @@ static const TCharPointersArray khronosValidationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
-void AInstance::createInstance() {
+void AInstance::createInstance(void *metalLayer) {
 #ifdef DEBUG
     useValidationLayers = true;
 #endif
@@ -27,29 +27,34 @@ void AInstance::createInstance() {
     
     VkApplicationInfo appInfo = applicationInfo();
     createInfo.pApplicationInfo = &appInfo;
-
+    
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = appendValidationLayers(createInfo);
     if (useValidationLayers) {
         createInfo.pNext = &debugCreateInfo;
     }
-
+    
     VkResult error = VK_SUCCESS;
     error = vkCreateInstance(&createInfo, nullptr, &vulkanInstance);
     if (error != VK_SUCCESS) {
         printf("DoomEngine: error creating VULKAN instance\n");
         return;
     }
-
+    
     if (useValidationLayers) {
         setupDebugMessenger();
     }
+    
+    setupDevice();
+    setupLogicalDevice();
+    setupSurface(metalLayer);
 }
 
 void AInstance::destroyInstance() {
     if (useValidationLayers) {
         destroyDebugUtilsMessenger(vulkanInstance, debugMessenger, nullptr);
     }
-
+    
+    vkDestroyDevice(logicalDevice, nullptr);
     vkDestroyInstance(vulkanInstance, nullptr);
     
     for (const auto& name : extensionsNamesList) {
@@ -63,7 +68,7 @@ VkApplicationInfo AInstance::applicationInfo() {
     uint32_t pApiVersion = 0;
     vkEnumerateInstanceVersion(&pApiVersion);
     appInfo.apiVersion = pApiVersion;
-
+    
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Doom";
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
@@ -188,15 +193,90 @@ void AInstance::setupDevice() {
     
     std::vector<VkPhysicalDevice> devicesList(devicesCount);
     vkEnumeratePhysicalDevices(vulkanInstance, &devicesCount, devicesList.data());
-    printf("DoomEngine: available devices:\n");
     for (const auto& device : devicesList) {
-        VkPhysicalDeviceProperties deviceProperties;
-        VkPhysicalDeviceFeatures deviceFeatures;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
-        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-        printf("\t%s\n", deviceProperties.deviceName);
+        if (checkDeviceCapability(device)) {
+            physicalDevice = device;
+            return;
+        }
+    }
+}
+
+bool AInstance::checkDeviceCapability(const VkPhysicalDevice& device) {
+    //  Find discrete GPU
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    if (deviceProperties.deviceType != VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+        return false;
     }
     
+    //  Check for shaders support
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+//    if (!deviceFeatures.geometryShader) {
+//        return false;
+//    }
+    
+    //  Find support of correct queue for
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+    std::vector<VkQueueFamilyProperties> queueFamiliesList(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamiliesList.data());
+    int graphicOperationsQueuesNumber = 0;
+    for (const auto& queueFamily : queueFamiliesList) {
+        if (!(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
+            continue;
+        }
+        
+        graphicOperationsQueuesNumber++;
+    }
+    
+    if (graphicOperationsQueuesNumber == 0) {
+        return false;
+    }
+    
+    printf("DoomEngine: using this device %s\n", deviceProperties.deviceName);
+    return true;
+}
+
+#pragma mark - Surface -
+
+void AInstance::setupSurface(void *metalLayer) {
+    VkMetalSurfaceCreateInfoEXT surfaceCreateInfo = {};
+    surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+    surfaceCreateInfo.pNext = NULL;
+    surfaceCreateInfo.flags = 0;
+    surfaceCreateInfo.pLayer = metalLayer;
+
+    if (vkCreateMetalSurfaceEXT(vulkanInstance, &surfaceCreateInfo, NULL, &surface) != VK_SUCCESS) {
+        printf("DoomEngine: error creating metal surface\n");
+    }
+}
+
+#pragma mark - Device -
+
+void AInstance::setupLogicalDevice() {
+    VkDeviceQueueCreateInfo queueCreateInfo = {};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = 3;
+    queueCreateInfo.queueCount = 1;
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures = {};
+
+    VkDeviceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0;
+    
+    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS) {
+        printf("DoomEngine: error creating logical device\n");
+    }
+
+    vkGetDeviceQueue(logicalDevice, queueCreateInfo.queueFamilyIndex, 0, &graphicsQueue);
+    //    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
 }
 
 }
