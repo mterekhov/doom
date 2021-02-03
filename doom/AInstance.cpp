@@ -5,6 +5,8 @@
 //  Created by Mihail Terekhov on 21.01.2021.
 //
 
+#include <set>
+
 #include "AInstance.h"
 
 namespace DoomEngine {
@@ -45,8 +47,9 @@ void AInstance::createInstance(void *metalLayer) {
     }
     
     setupDevice();
-    setupLogicalDevice();
     setupSurface(metalLayer);
+    findQueuesIndeces();
+    setupLogicalDevice();
 }
 
 void AInstance::destroyInstance() {
@@ -55,6 +58,7 @@ void AInstance::destroyInstance() {
     }
     
     vkDestroyDevice(logicalDevice, nullptr);
+    vkDestroySurfaceKHR(vulkanInstance, surface, nullptr);
     vkDestroyInstance(vulkanInstance, nullptr);
     
     for (const auto& name : extensionsNamesList) {
@@ -102,6 +106,32 @@ TCharPointersArray AInstance::collectInstanceExtensionsNames(TInstanceExtensions
     }
     
     return namesList;
+}
+
+#pragma mark - Queues -
+
+void AInstance::findQueuesIndeces() {
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+    std::vector<VkQueueFamilyProperties> queueFamiliesList(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamiliesList.data());
+
+    for (uint32_t i = 0; i < queueFamiliesList.size(); i++) {
+        const auto& queueFamily = queueFamiliesList[i];
+        if ((queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
+            graphicQueueFamilyIndex = i;
+        }
+        
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
+        if (presentSupport) {
+            presentQueueFamilyIndex = i;
+        }
+
+        if (presentQueueFamilyIndex > 0 && graphicQueueFamilyIndex > 0) {
+            return;
+        }
+    }
 }
 
 #pragma mark - Validation Layers -
@@ -215,25 +245,7 @@ bool AInstance::checkDeviceCapability(const VkPhysicalDevice& device) {
 //    if (!deviceFeatures.geometryShader) {
 //        return false;
 //    }
-    
-    //  Find support of correct queue for
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-    std::vector<VkQueueFamilyProperties> queueFamiliesList(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamiliesList.data());
-    int graphicOperationsQueuesNumber = 0;
-    for (const auto& queueFamily : queueFamiliesList) {
-        if (!(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)) {
-            continue;
-        }
         
-        graphicOperationsQueuesNumber++;
-    }
-    
-    if (graphicOperationsQueuesNumber == 0) {
-        return false;
-    }
-    
     printf("DoomEngine: using this device %s\n", deviceProperties.deviceName);
     return true;
 }
@@ -255,28 +267,32 @@ void AInstance::setupSurface(void *metalLayer) {
 #pragma mark - Device -
 
 void AInstance::setupLogicalDevice() {
-    VkDeviceQueueCreateInfo queueCreateInfo = {};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = 3;
-    queueCreateInfo.queueCount = 1;
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfosList;
+    std::set<int> uniqueQueueFamilies = {graphicQueueFamilyIndex, presentQueueFamilyIndex};
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+    for (int queueIndex : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo = {};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueIndex;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        queueCreateInfosList.push_back(queueCreateInfo);
+    }
 
     VkPhysicalDeviceFeatures deviceFeatures = {};
 
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfosList.size());
+    createInfo.pQueueCreateInfos = queueCreateInfosList.data();
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0;
-    
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS) {
         printf("DoomEngine: error creating logical device\n");
     }
 
-    vkGetDeviceQueue(logicalDevice, queueCreateInfo.queueFamilyIndex, 0, &graphicsQueue);
-    //    vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(logicalDevice, graphicQueueFamilyIndex, 0, &graphicsQueue);
+    vkGetDeviceQueue(logicalDevice, presentQueueFamilyIndex, 0, &presentQueue);
 }
 
 }

@@ -25,6 +25,7 @@ public:
 
 private:
     VkQueue graphicsQueue;
+    VkQueue presentQueue;
     VkPhysicalDevice physicalDevice;
     VkDevice logicalDevice;
     VkInstance vulkanInstance;
@@ -34,13 +35,17 @@ private:
     TCharPointersArray extensionsNamesList;
     VkDebugUtilsMessengerEXT debugMessenger;
     bool useValidationLayers = false;
-    
+    int graphicQueueFamilyIndex = -1;
+    int presentQueueFamilyIndex = -1;
+
     void setupDevice();
     bool checkDeviceCapability(const VkPhysicalDevice& device);
     
     void setupLogicalDevice();
 
     void setupSurface(void *metalLayer);
+    
+    void findQueuesIndeces();
 
     VkDebugUtilsMessengerCreateInfoEXT appendValidationLayers(VkInstanceCreateInfo& createInfo);
     TInstanceExtensionsArray collectInstanceExtensions();
