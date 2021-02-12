@@ -15,7 +15,7 @@ namespace DoomEngine {
 
 class AVulkanAPI {
 public:
-    bool initVulkan(void *metalLayer);
+    bool initVulkan(void *metalLayer, const uint32_t width, const uint32_t height);
     void destroyVulkan();
 
     void setViewSize(int width, int height);

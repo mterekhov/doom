@@ -9,8 +9,8 @@
 
 namespace DoomEngine {
 
-bool AVulkanAPI::initVulkan(void *metalLayer) {
-    vulkanInstance.createInstance(metalLayer);
+bool AVulkanAPI::initVulkan(void *metalLayer, const uint32_t width, const uint32_t height) {
+    vulkanInstance.createInstance(metalLayer, width, height);
     return true;
 }
 

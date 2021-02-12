@@ -25,7 +25,9 @@ static NSInteger framesCount = 0;
     [super viewDidAppear];
     
     self.vulkanEngine = new DoomEngine::AVulkanAPI();
-    if (!self.vulkanEngine->initVulkan((__bridge void *)self.view.layer)) {
+    if (!self.vulkanEngine->initVulkan((__bridge void *)self.view.layer,
+                                       static_cast<uint32_t>(CGRectGetWidth(self.view.layer.bounds)),
+                                       static_cast<uint32_t>(CGRectGetHeight(self.view.layer.bounds)))) {
         NSLog(@"ACHTUNG: no chance to create VULKAN instance");
     }
 }

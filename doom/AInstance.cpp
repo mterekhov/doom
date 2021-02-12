@@ -5,6 +5,7 @@
 //  Created by Mihail Terekhov on 21.01.2021.
 //
 
+#include <iostream>
 #include <set>
 
 #include "AInstance.h"
@@ -15,7 +16,14 @@ static const TCharPointersArray khronosValidationLayers = {
     "VK_LAYER_KHRONOS_validation"
 };
 
-void AInstance::createInstance(void *metalLayer) {
+const TCharPointersArray deviceExtensions = {
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+};
+
+void AInstance::createInstance(void *metalLayer, const uint32_t frameWidth, const uint32_t frameHeight) {
+    width = frameWidth;
+    height = frameHeight;
+    
 #ifdef DEBUG
     useValidationLayers = true;
 #endif
@@ -49,7 +57,9 @@ void AInstance::createInstance(void *metalLayer) {
     setupDevice();
     setupSurface(metalLayer);
     findQueuesIndeces();
+    querySwapChainSupport(physicalDevice);
     setupLogicalDevice();
+    createSwapChain();
 }
 
 void AInstance::destroyInstance() {
@@ -57,6 +67,7 @@ void AInstance::destroyInstance() {
         destroyDebugUtilsMessenger(vulkanInstance, debugMessenger, nullptr);
     }
     
+    vkDestroySwapchainKHR(logicalDevice, swapChain, nullptr);
     vkDestroyDevice(logicalDevice, nullptr);
     vkDestroySurfaceKHR(vulkanInstance, surface, nullptr);
     vkDestroyInstance(vulkanInstance, nullptr);
@@ -80,6 +91,97 @@ VkApplicationInfo AInstance::applicationInfo() {
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     
     return appInfo;
+}
+
+#pragma mark - Swap -
+
+void AInstance::createSwapChain() {
+    SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
+
+    VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+    
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+    if (swapChainSupport.capabilities.maxImageCount > 0 &&
+        imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = surface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+    if (vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+        printf("DoomEngine: failed to create swap chain\n");
+    }
+    
+}
+
+VkExtent2D AInstance::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
+    if (capabilities.currentExtent.width != UINT32_MAX) {
+        return capabilities.currentExtent;
+    } else {
+        VkExtent2D actualExtent = {width, height};
+
+        actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
+        actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
+        
+        return actualExtent;
+    }
+}
+
+SwapChainSupportDetails AInstance::querySwapChainSupport(VkPhysicalDevice device) {
+    SwapChainSupportDetails details = {0};
+    
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &details.capabilities);
+    
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
+    if (formatCount != 0) {
+        details.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, details.formats.data());
+    }
+    
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
+    if (presentModeCount != 0) {
+        details.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, details.presentModes.data());
+    }
+    
+    return details;
+}
+
+VkSurfaceFormatKHR AInstance::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+    for (const auto& availableFormat : availableFormats) {
+        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
+            availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+            return availableFormat;
+        }
+    }
+
+    return availableFormats[0];
+}
+
+VkPresentModeKHR AInstance::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
+    for (const auto& availablePresentMode : availablePresentModes) {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+            return availablePresentMode;
+        }
+    }
+
+    return VK_PRESENT_MODE_FIFO_KHR;
 }
 
 #pragma mark - Instance Extensions -
@@ -239,15 +341,30 @@ bool AInstance::checkDeviceCapability(const VkPhysicalDevice& device) {
         return false;
     }
     
-    //  Check for shaders support
-    VkPhysicalDeviceFeatures deviceFeatures;
-    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+//    //  Check for shaders support
+//    VkPhysicalDeviceFeatures deviceFeatures;
+//    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
 //    if (!deviceFeatures.geometryShader) {
 //        return false;
 //    }
         
     printf("DoomEngine: using this device %s\n", deviceProperties.deviceName);
     return true;
+}
+
+bool AInstance::checkDeviceExtensionSupport(VkPhysicalDevice& device) {
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+    
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+    
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
+    for (const auto& extension : availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+    
+    return requiredExtensions.empty();
 }
 
 #pragma mark - Surface -
@@ -268,7 +385,7 @@ void AInstance::setupSurface(void *metalLayer) {
 
 void AInstance::setupLogicalDevice() {
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfosList;
-    std::set<int> uniqueQueueFamilies = {graphicQueueFamilyIndex, presentQueueFamilyIndex};
+    std::set<int32_t> uniqueQueueFamilies = {graphicQueueFamilyIndex, presentQueueFamilyIndex};
     float queuePriority = 1.0f;
     for (int queueIndex : uniqueQueueFamilies) {
         VkDeviceQueueCreateInfo queueCreateInfo = {};
@@ -287,6 +404,10 @@ void AInstance::setupLogicalDevice() {
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfosList.size());
     createInfo.pQueueCreateInfos = queueCreateInfosList.data();
     createInfo.pEnabledFeatures = &deviceFeatures;
+    if (checkDeviceExtensionSupport(physicalDevice)) {
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+    }
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) != VK_SUCCESS) {
         printf("DoomEngine: error creating logical device\n");
     }

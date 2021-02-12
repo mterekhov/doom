@@ -18,9 +18,15 @@ typedef std::vector<VkExtensionProperties> TInstanceExtensionsArray;
 typedef std::vector<std::string> TStringsArray;
 typedef std::vector<const char *> TCharPointersArray;
 
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
 class AInstance {
 public:
-    void createInstance(void *metalLayer);
+    void createInstance(void *metalLayer, const uint32_t frameWidth, const uint32_t frameHeight);
     void destroyInstance();
 
 private:
@@ -30,15 +36,25 @@ private:
     VkDevice logicalDevice;
     VkInstance vulkanInstance;
     VkSurfaceKHR surface;
+    VkSwapchainKHR swapChain;
     
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
     VkDebugUtilsMessengerEXT debugMessenger;
     bool useValidationLayers = false;
-    int graphicQueueFamilyIndex = -1;
-    int presentQueueFamilyIndex = -1;
+    int32_t graphicQueueFamilyIndex = -1;
+    int32_t presentQueueFamilyIndex = -1;
+    uint32_t width = 0;
+    uint32_t height = 0;
+
+    void createSwapChain();
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
     void setupDevice();
+    bool checkDeviceExtensionSupport(VkPhysicalDevice& device);
     bool checkDeviceCapability(const VkPhysicalDevice& device);
     
     void setupLogicalDevice();
