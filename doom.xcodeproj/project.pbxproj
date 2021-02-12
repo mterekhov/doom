@@ -20,6 +20,11 @@
 		E38E5F8525C18E3B00A115C0 /* libvulkan.1.2.162.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E38E5F7F25C18E3B00A115C0 /* libvulkan.1.2.162.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E3EC319B25C18F020082A9E7 /* vulkan in Resources */ = {isa = PBXBuildFile; fileRef = E3EC319A25C18F020082A9E7 /* vulkan */; };
 		E3EDD6E925B96CDA00925E77 /* AInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3EDD6E725B96CDA00925E77 /* AInstance.cpp */; };
+		E3FA289525D687F30079F72A /* shader.vert in Resources */ = {isa = PBXBuildFile; fileRef = E3FA289425D687F30079F72A /* shader.vert */; };
+		E3FA289725D688060079F72A /* shader.frag in Resources */ = {isa = PBXBuildFile; fileRef = E3FA289625D688060079F72A /* shader.frag */; };
+		E3FA289A25D691DB0079F72A /* vert.spv in Resources */ = {isa = PBXBuildFile; fileRef = E3FA289825D691DB0079F72A /* vert.spv */; };
+		E3FA289B25D691DB0079F72A /* frag.spv in Resources */ = {isa = PBXBuildFile; fileRef = E3FA289925D691DB0079F72A /* frag.spv */; };
+		E3FA289E25D6920B0079F72A /* ABundle.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3FA289D25D6920B0079F72A /* ABundle.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,6 +61,12 @@
 		E3EC319A25C18F020082A9E7 /* vulkan */ = {isa = PBXFileReference; lastKnownFileType = folder; path = vulkan; sourceTree = "<group>"; };
 		E3EDD6E725B96CDA00925E77 /* AInstance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AInstance.cpp; sourceTree = "<group>"; };
 		E3EDD6E825B96CDA00925E77 /* AInstance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AInstance.h; sourceTree = "<group>"; };
+		E3FA289425D687F30079F72A /* shader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.vert; path = shaders/shader.vert; sourceTree = "<group>"; };
+		E3FA289625D688060079F72A /* shader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = shader.frag; path = shaders/shader.frag; sourceTree = "<group>"; };
+		E3FA289825D691DB0079F72A /* vert.spv */ = {isa = PBXFileReference; lastKnownFileType = file; name = vert.spv; path = shaders/vert.spv; sourceTree = "<group>"; };
+		E3FA289925D691DB0079F72A /* frag.spv */ = {isa = PBXFileReference; lastKnownFileType = file; name = frag.spv; path = shaders/frag.spv; sourceTree = "<group>"; };
+		E3FA289C25D6920B0079F72A /* ABundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ABundle.h; sourceTree = "<group>"; };
+		E3FA289D25D6920B0079F72A /* ABundle.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ABundle.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +113,7 @@
 		E377DB3C25B88FFF003958A2 /* doom */ = {
 			isa = PBXGroup;
 			children = (
+				E3FA289325D687D00079F72A /* shaders */,
 				E3EC319A25C18F020082A9E7 /* vulkan */,
 				E3EDD6EA25B96CE300925E77 /* engine */,
 				E377DB4325B88FFF003958A2 /* AGameVC.h */,
@@ -119,12 +131,25 @@
 		E3EDD6EA25B96CE300925E77 /* engine */ = {
 			isa = PBXGroup;
 			children = (
+				E3FA289C25D6920B0079F72A /* ABundle.h */,
+				E3FA289D25D6920B0079F72A /* ABundle.mm */,
 				E3499A7425B899F80048F4DA /* AVulkanAPI.h */,
 				E3499A7525B899F80048F4DA /* AVulkanAPI.cpp */,
 				E3EDD6E825B96CDA00925E77 /* AInstance.h */,
 				E3EDD6E725B96CDA00925E77 /* AInstance.cpp */,
 			);
 			name = engine;
+			sourceTree = "<group>";
+		};
+		E3FA289325D687D00079F72A /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				E3FA289925D691DB0079F72A /* frag.spv */,
+				E3FA289825D691DB0079F72A /* vert.spv */,
+				E3FA289425D687F30079F72A /* shader.vert */,
+				E3FA289625D688060079F72A /* shader.frag */,
+			);
+			name = shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -134,6 +159,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E377DB5425B89000003958A2 /* Build configuration list for PBXNativeTarget "doom" */;
 			buildPhases = (
+				E3FA289F25D69D960079F72A /* ShellScript */,
 				E377DB3625B88FFF003958A2 /* Sources */,
 				E377DB3725B88FFF003958A2 /* Frameworks */,
 				E377DB3825B88FFF003958A2 /* Resources */,
@@ -184,12 +210,36 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E3FA289725D688060079F72A /* shader.frag in Resources */,
+				E3FA289B25D691DB0079F72A /* frag.spv in Resources */,
+				E3FA289525D687F30079F72A /* shader.vert in Resources */,
 				E377DB4A25B89000003958A2 /* Assets.xcassets in Resources */,
+				E3FA289A25D691DB0079F72A /* vert.spv in Resources */,
 				E3EC319B25C18F020082A9E7 /* vulkan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E3FA289F25D69D960079F72A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "vulkansdk-macos-1.2.162.0/macOS/bin/glslc doom/shaders/shader.vert -o doom/shaders/vert.spv\nvulkansdk-macos-1.2.162.0/macOS/bin/glslc doom/shaders/shader.frag -o doom/shaders/frag.spv\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E377DB3625B88FFF003958A2 /* Sources */ = {
@@ -197,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E377DB5025B89000003958A2 /* main.m in Sources */,
+				E3FA289E25D6920B0079F72A /* ABundle.mm in Sources */,
 				E377DB4525B88FFF003958A2 /* AGameVC.mm in Sources */,
 				E3EDD6E925B96CDA00925E77 /* AInstance.cpp in Sources */,
 				E3499A7625B899F80048F4DA /* AVulkanAPI.cpp in Sources */,

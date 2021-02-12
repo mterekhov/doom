@@ -43,6 +43,10 @@ private:
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
     
+    VkPipelineLayout pipelineLayout;
+    VkRenderPass renderPass;
+    VkPipeline graphicsPipeline;
+    
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
     VkDebugUtilsMessengerEXT debugMessenger;
@@ -51,6 +55,10 @@ private:
     int32_t presentQueueFamilyIndex = -1;
     uint32_t width = 0;
     uint32_t height = 0;
+
+    void createRenderPass();
+    void createGraphicsPipeline();
+    VkShaderModule createShaderModule(const std::vector<uint8_t>& code);
 
     void createSwapChain();
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
