@@ -36,7 +36,12 @@ private:
     VkDevice logicalDevice;
     VkInstance vulkanInstance;
     VkSurfaceKHR surface;
+    
     VkSwapchainKHR swapChain;
+    std::vector<VkImage> swapChainImages;
+    std::vector<VkImageView> swapChainImageViews;
+    VkFormat swapChainImageFormat;
+    VkExtent2D swapChainExtent;
     
     TInstanceExtensionsArray extensionsList;
     TCharPointersArray extensionsNamesList;
@@ -52,6 +57,7 @@ private:
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    void createImageViews();
 
     void setupDevice();
     bool checkDeviceExtensionSupport(VkPhysicalDevice& device);
