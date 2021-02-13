@@ -28,8 +28,15 @@ class AInstance {
 public:
     void createInstance(void *metalLayer, const uint32_t frameWidth, const uint32_t frameHeight);
     void destroyInstance();
+    void drawFrame();
 
 private:
+    VkSemaphore imageAvailableSemaphore;
+    VkSemaphore renderFinishedSemaphore;
+
+    std::vector<VkCommandBuffer> commandBuffers;
+    VkCommandPool commandPool;
+    
     VkQueue graphicsQueue;
     VkQueue presentQueue;
     VkPhysicalDevice physicalDevice;
@@ -42,7 +49,8 @@ private:
     std::vector<VkImageView> swapChainImageViews;
     VkFormat swapChainImageFormat;
     VkExtent2D swapChainExtent;
-    
+    std::vector<VkFramebuffer> swapChainFramebuffers;
+
     VkPipelineLayout pipelineLayout;
     VkRenderPass renderPass;
     VkPipeline graphicsPipeline;
@@ -56,10 +64,16 @@ private:
     uint32_t width = 0;
     uint32_t height = 0;
 
+    void createSemaphores();
+
+    void createCommandPool();
+    void createCommandBuffers();
+    
     void createRenderPass();
     void createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<uint8_t>& code);
 
+    void createFramebuffers();
     void createSwapChain();
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

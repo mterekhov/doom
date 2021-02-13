@@ -27,7 +27,7 @@ void AVulkanAPI::setView(void *pView) {
 }
 
 void AVulkanAPI::mainLoop() {
-    
+    vulkanInstance.drawFrame();
 }
 
 }
