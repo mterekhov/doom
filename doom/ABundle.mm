@@ -22,6 +22,7 @@ std::vector<uint8_t> ABundle::readFile(const std::string& filename) {
     fseek(file, 0L, SEEK_END);
     size_t fileSize = ftell(file);
     std::vector<uint8_t> buffer(fileSize);
+    fseek(file, 0L, SEEK_SET);
     fread(buffer.data(), fileSize, 1, file);
     fclose(file);
     
