@@ -1,17 +1,10 @@
-//
-//  AInstance.cpp
-//  doom
-//
-//  Created by Mihail Terekhov on 21.01.2021.
-//
-
 #include <iostream>
 #include <set>
 
 #include "AInstance.h"
 #include "ABundle.h"
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 static const TCharPointersArray khronosValidationLayers = {
     "VK_LAYER_KHRONOS_validation"

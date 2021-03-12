@@ -1,17 +1,10 @@
-//
-//  AVulkanAPI.hpp
-//  pureapp
-//
-//  Created by Mihail Terekhov on 13.01.2021.
-//
-
-#ifndef AVulkanAPI_hpp
-#define AVulkanAPI_hpp
+#ifndef SPCDOOMENGINE_AVULKANAPI_H
+#define SPCDOOMENGINE_AVULKANAPI_H
 
 #include <stdio.h>
 #include "AInstance.h"
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 class AVulkanAPI {
 public:
@@ -27,7 +20,6 @@ private:
 
 };
 
-}
+}   //  namespace spcDoomEngine
 
-
-#endif /* AVulkanAPI_hpp */
+#endif  //  SPCDOOMENGINE_AVULKANAPI_H

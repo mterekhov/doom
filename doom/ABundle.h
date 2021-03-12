@@ -1,9 +1,9 @@
-#ifndef ABUNDLE_H
-#define ABUNDLE_H
+#ifndef SPCDOOMENGINE_ABUNDLE_H
+#define SPCDOOMENGINE_ABUNDLE_H
 
 #include <string>
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 class ABundle {
 public:
@@ -11,6 +11,6 @@ public:
     std::vector<uint8_t> readFile(const std::string& filename);
 };
 
-}
+}   //  namespace spcDoomEngine
 
-#endif /* ABUNDLE_H */
+#endif  //  SPCDOOMENGINE_ABUNDLE_H

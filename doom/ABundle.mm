@@ -3,7 +3,7 @@
 #include "ABundle.h"
 #include <vector>
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 std::string ABundle::resourceFullPath(const std::string& resourceName) {
     NSString *resourcePath = [NSString stringWithCString:resourceName.c_str()

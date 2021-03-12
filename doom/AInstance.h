@@ -1,18 +1,11 @@
-//
-//  AInstance.hpp
-//  doom
-//
-//  Created by Mihail Terekhov on 21.01.2021.
-//
-
-#ifndef AInstance_hpp
-#define AInstance_hpp
+#ifndef SPCDOOMENGINE_AINSTANCE_H
+#define SPCDOOMENGINE_AINSTANCE_H
 
 #include <stdio.h>
 #include <vector>
 #include <vulkan/vulkan.h>
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 typedef std::vector<VkExtensionProperties> TInstanceExtensionsArray;
 typedef std::vector<std::string> TStringsArray;
@@ -112,6 +105,6 @@ private:
                                                         void* pUserData);
 };
 
-}
+}   //  namespace spcDoomEngine
 
-#endif /* AInstance_hpp */
+#endif  //  SPCDOOMENGINE_AINSTANCE_H

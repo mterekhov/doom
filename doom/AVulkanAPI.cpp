@@ -1,13 +1,6 @@
-//
-//  AVulkanAPI.cpp
-//  pureapp
-//
-//  Created by Mihail Terekhov on 13.01.2021.
-//
-
 #include "AVulkanAPI.h"
 
-namespace DoomEngine {
+namespace spcDoomEngine {
 
 bool AVulkanAPI::initVulkan(void *metalLayer, const uint32_t width, const uint32_t height) {
     vulkanInstance.createInstance(metalLayer, width, height);

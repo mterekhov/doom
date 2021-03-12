@@ -15,7 +15,7 @@ static NSInteger framesCount = 0;
 
 @interface AGameVC()
 
-@property (nonatomic, assign) DoomEngine::AVulkanAPI *vulkanEngine;
+@property (nonatomic, assign) spcDoomEngine::AVulkanAPI *vulkanEngine;
 @property (nonatomic, assign) BOOL canDraw;
 
 @end
@@ -26,7 +26,7 @@ static NSInteger framesCount = 0;
     [super viewDidAppear];
     self.canDraw = NO;
     
-    self.vulkanEngine = new DoomEngine::AVulkanAPI();
+    self.vulkanEngine = new spcDoomEngine::AVulkanAPI();
     if (!self.vulkanEngine->initVulkan((__bridge void *)self.view.layer,
                                        static_cast<uint32_t>(CGRectGetWidth(self.view.layer.bounds)),
                                        static_cast<uint32_t>(CGRectGetHeight(self.view.layer.bounds)))) {
